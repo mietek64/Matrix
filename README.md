@@ -32,6 +32,7 @@ Features: **full RGB color**, **9 built-in presets**, **wave / sparkle / tilt / 
  .\matrix.exe --install
 ```
 This copies `matrix.exe` to `C:\tools\` and adds it to your PATH automatically.
+
 3. Open a **new** terminal → type `matrix` ✓
 
 **Option B — PowerShell one-liner** *(no manual download needed)*
