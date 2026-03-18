@@ -12,14 +12,8 @@ Full RGB color, 9 built-in presets, TUI config editor, standalone `.exe`.
 
 ## Preview
 
-```
- ｦ                ｦ         ｦ
- ｧ  ｦ             ｱ         ｷ
- ｨ  ｧ    ｦ        ｲ  ｦ      ｸ
- ｩ  ｨ    ｧ        ｳ  ｧ  ｦ   ｹ
-    ｩ    ｨ           ｨ  ｧ
-         ｩ              ｨ
-```
+![matrix demo](preview.gif)
+
 
 Features: **full RGB color**, **9 built-in presets**, **wave / sparkle / tilt / glitch effects**,  
 **ASCII art title banners**, color cycling — all configurable through a TUI editor or plain JSON.
@@ -28,20 +22,34 @@ Features: **full RGB color**, **9 built-in presets**, **wave / sparkle / tilt / 
 
 ## Install
 
-### Windows — one download, no Python needed
+### Windows — automatic (recommended)
 
-1. Download **[matrix.exe](https://github.com/mietek64/Matrix/releases/latest/download/matrix.exe)** from Releases
-2. Move it to a permanent folder — e.g. `C:\tools\`
-3. Add that folder to your PATH *(one-time, 30 seconds)*:
-   - Press `Win + R` → type `sysdm.cpl` → Enter
-   - **Advanced** tab → **Environment Variables**
-   - Under *User variables*, select **Path** → **Edit** → **New** → paste `C:\tools`
-   - Click OK, open a **new** terminal window
-4. Type `matrix` ✓
+**Option A — built-in installer** *(simplest)*
+
+1. Download **[matrix.exe](https://github.com/mietek64/Matrix/releases/latest/download/matrix.exe)**
+2. Open a terminal in the folder where you downloaded it and run:
+```powershell
+ .\matrix.exe --install
+```
+This copies `matrix.exe` to `C:\tools\` and adds it to your PATH automatically.
+3. Open a **new** terminal → type `matrix` ✓
+
+**Option B — PowerShell one-liner** *(no manual download needed)*
+
+```powershell
+irm https://github.com/mietek64/Matrix/releases/latest/download/matrix.exe -OutFile matrix.exe; .\matrix.exe --install
+```
+
+**Option C — manual**
+
+1. Download **[matrix.exe](https://github.com/mietek64/Matrix/releases/latest/download/matrix.exe)**
+2. Move it to any permanent folder — e.g. `C:\tools\`
+3. Press `Win + R` → type `sysdm.cpl` → **Advanced** → **Environment Variables** → **Path** → **Edit** → **New** → paste `C:\tools`
+4. Open a new terminal → type `matrix` ✓
 
 > **Antivirus note:** Windows Defender may flag PyInstaller-packaged executables.  
-> This is a known false positive with PyInstaller's bootloader — the source code is fully visible above.  
-> You can build it yourself from source if you prefer (see [Build from Source](#build-from-source)).
+> This is a known false positive with PyInstaller's bootloader — the full source is in this repo.  
+> Build it yourself from source if you prefer (see [Build from Source](#build-from-source)).
 
 ### Linux / macOS
 
@@ -171,12 +179,7 @@ Matrix/
 ├── SECURITY.md
 ├── CONTRIBUTING.md
 ├── CHANGELOG.md
-├── .gitignore
-└── .github/
-    ├── ISSUE_TEMPLATE/
-    │   ├── bug_report.md
-    │   └── feature_request.md
-    └── PULL_REQUEST_TEMPLATE.md
+└── .gitignore
 ```
 
 ---
