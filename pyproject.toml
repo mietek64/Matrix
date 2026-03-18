@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name        = "matrix-rain"
+version     = "1.0.0"
+description = "Matrix waterfall terminal animation"
+readme      = "README.md"
+license     = { file = "LICENSE" }
+requires-python = ">=3.13"
+dependencies = [
+    "rich>=13.0",
+    "pyfiglet>=0.8",
+]
+
+# Registers  `matrix`  as a shell command when installed via  pip install -e .
+[project.scripts]
+matrix = "matrix:main"
+
+[tool.setuptools]
+py-modules = ["matrix"]
