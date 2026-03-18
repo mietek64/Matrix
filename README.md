@@ -179,6 +179,7 @@ Matrix/
 ├── SECURITY.md
 ├── CONTRIBUTING.md
 ├── CHANGELOG.md
+├── preview.gif
 └── .gitignore
 ```
 
