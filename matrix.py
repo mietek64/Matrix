@@ -36,7 +36,7 @@ try:
 except ImportError:
     HAS_FIGLET = False
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  Paths
@@ -1099,13 +1099,94 @@ def run_preset_browser(cfg_path: str) -> None:
 
 
 # ═════════════════════════════════════════════════════════════════════════════
+#  Self-installer  (matrix --install)
+# ═════════════════════════════════════════════════════════════════════════════
+
+def run_install() -> None:
+    """Copy this .exe to C:\\tools\\ and add it to the user PATH automatically."""
+    console = Console()
+    G  = "#00cc44"
+
+    console.print()
+    console.print(f"  [bold {G}]░▒▓  MATRIX INSTALLER  ▓▒░[/]")
+    console.print()
+
+    if sys.platform != "win32":
+        console.print("  [yellow]--install is for Windows only.[/]")
+        console.print("  [dim]On Linux/macOS: move this binary to /usr/local/bin/[/]")
+        console.print()
+        return
+
+    import shutil
+    import winreg
+
+    # Works both as a frozen .exe and as a plain .py script
+    src         = sys.executable if getattr(sys, "frozen", False) else os.path.abspath(__file__)
+    install_dir = r"C:\tools"
+    dest        = os.path.join(install_dir, "matrix.exe")
+
+    # ── Create C:\tools\ ──────────────────────────────────────────────────────
+    try:
+        os.makedirs(install_dir, exist_ok=True)
+        console.print(f"  [bold green][+][/] Install folder ready: {install_dir}")
+    except Exception as e:
+        console.print(f"  [red][x] Could not create {install_dir}: {e}[/]"); return
+
+    # ── Copy the .exe ─────────────────────────────────────────────────────────
+    try:
+        shutil.copy2(src, dest)
+        console.print(f"  [bold green][+][/] Copied matrix.exe → {dest}")
+    except Exception as e:
+        console.print(f"  [red][x] Could not copy file: {e}[/]"); return
+
+    # ── Add C:\tools to user PATH via registry ────────────────────────────────
+    try:
+        key = winreg.OpenKey(
+            winreg.HKEY_CURRENT_USER, r"Environment",
+            0, winreg.KEY_READ | winreg.KEY_WRITE
+        )
+        try:
+            current_path, _ = winreg.QueryValueEx(key, "PATH")
+        except FileNotFoundError:
+            current_path = ""
+
+        parts = [p for p in current_path.split(";") if p]
+        if install_dir.lower() not in [p.lower() for p in parts]:
+            parts.append(install_dir)
+            winreg.SetValueEx(key, "PATH", 0, winreg.REG_EXPAND_SZ, ";".join(parts))
+            console.print(f"  [bold green][+][/] Added {install_dir} to user PATH")
+        else:
+            console.print(f"  [bold green][+][/] {install_dir} already in PATH")
+        winreg.CloseKey(key)
+
+        # Tell Windows to refresh PATH in open windows
+        import ctypes
+        ctypes.windll.user32.SendMessageTimeoutW(
+            0xFFFF, 0x001A, 0, "Environment", 2, 5000, None
+        )
+    except Exception as e:
+        console.print(f"  [red][x] Could not update PATH: {e}[/]")
+        console.print(f"  [dim]    Add {install_dir} to PATH manually via sysdm.cpl[/]")
+
+    # ── Done ──────────────────────────────────────────────────────────────────
+    console.print()
+    console.print(f"  [bold {G}]Done![/] [dim]Open a new terminal and run:[/]")
+    console.print(f"    [bold {G}]matrix[/]      [dim]show help[/]")
+    console.print(f"    [bold {G}]matrix -s[/]   [dim]start animation[/]")
+    console.print(f"    [bold {G}]matrix -c[/]   [dim]config editor[/]")
+    console.print(f"    [bold {G}]matrix -p[/]   [dim]preset browser[/]")
+    console.print()
+    input("  Press Enter to close...")
+
+
+# ═════════════════════════════════════════════════════════════════════════════
 #  CLI entry point
 # ═════════════════════════════════════════════════════════════════════════════
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
         prog="matrix",
-        add_help=False,   # we handle no-args ourselves as a splash
+        add_help=False,
         description="Matrix waterfall terminal animation",
     )
     mode = p.add_mutually_exclusive_group()
@@ -1113,6 +1194,8 @@ def parse_args() -> argparse.Namespace:
     mode.add_argument("-c", "--config",  action="store_true", help="Open config editor")
     mode.add_argument("-p", "--presets", action="store_true", help="Browse presets")
     mode.add_argument("-h", "--help",    action="store_true", help="Show help")
+    mode.add_argument("--install",       action="store_true",
+                      help="Copy to C:\\tools\\ and add to PATH  (Windows)")
     p.add_argument("-f", "--file", default=DEFAULT_CONFIG_PATH, metavar="PATH",
                    help=f"Config file  (default: {DEFAULT_CONFIG_PATH})")
     return p.parse_args()
@@ -1125,8 +1208,9 @@ def main() -> None:
         run_config_editor(args.file)
     elif args.presets:
         run_preset_browser(args.file)
+    elif args.install:
+        run_install()
     else:
-        # No args (or -h): show the splash screen
         show_splash()
 
 if __name__ == "__main__":
