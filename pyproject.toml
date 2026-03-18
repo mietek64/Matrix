@@ -10,8 +10,8 @@ readme      = "README.md"
 license     = { file = "LICENSE" }
 requires-python = ">=3.13"
 dependencies = [
-    "rich>=13.0",
-    "pyfiglet>=0.8",
+    "rich>=14.3.3",
+    "pyfiglet>=1.0.4",
 ]
 
 # Registers  `matrix`  as a shell command when installed via  pip install -e .
