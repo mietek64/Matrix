@@ -51,12 +51,12 @@ irm https://github.com/mietek64/Matrix/releases/latest/download/matrix.exe -OutF
 > This is a known false positive with PyInstaller's bootloader — the full source is in this repo.  
 > Build it yourself from source if you prefer (see [Build from Source](#build-from-source)).
 
-### Linux / macOS
+### Linux / macOS — coming soon
 
+Not yet available as a pre-built binary. You can run it from source:
 ```bash
-curl -fsSL https://github.com/mietek64/Matrix/releases/latest/download/matrix-linux \
-  -o matrix && chmod +x matrix && sudo mv matrix /usr/local/bin/
-matrix
+pip install rich pyfiglet
+python matrix.py -s
 ```
 
 ---
